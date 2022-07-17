@@ -22,7 +22,7 @@
 
      設定は以下の通り↓<br>
      ![](image1.png)<br>
- 4. 展開先のディレクトリで[このコンバータ](https://github.com/Prince-of-sea/MJO2ONS_Tiger-Musuhira/releases/latest)をDL/起動させ変換(最低でも数分程度はかかります)<br>
+ 4. 展開先のディレクトリで[このコンバータ](https://github.com/Prince-of-sea/MJO2ONS_Tiger-Musuhira/releases/latest)をDL/起動させ変換<br>
     変換前の時点で以下のような構成になっていればOKです↓<br>
     ![](image2.png)<br>
  5. ウィンドウが消え、0.txtができれば完成<br>
