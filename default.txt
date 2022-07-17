@@ -1,0 +1,228 @@
+;mode800
+*define
+
+caption "むすんで、ひらいて。 for ONScripter"
+
+rmenu "セーブ",save,"ロード",load,"リセット",reset
+savenumber 18
+transmode alpha
+globalon
+rubyon
+saveon
+nsa
+humanz 10
+windowback
+
+
+defsub name
+defsub errmsg
+defsub def_adv2nvl
+defsub def_print
+defsub cls
+defsub pause
+defsub tati
+defsub taticsp
+defsub tatis
+defsub select_set
+defsub select_start
+defsub def_se
+defsub def_bgm
+defsub stopfadeout
+
+effect 10,10,500
+;<<-EFFECT->>
+
+game
+;----------------------------------------
+*name
+	getparam $1
+	
+	;キャラ名中央表示用座標取得
+	;詳細はミクキスコンバータ参照
+	len %1,$1
+	mov %2,(240-(%1/2)*(26+2)-2)/2
+	
+	strsp 10,$1,%2,423,7,0,24,24,0,3,0,1
+return
+
+
+*errmsg
+	csp -1:print 1
+	bg black,1
+	
+	Ｃｏｎｖｅｒｔ　Ｅｒｒｏｒ！@
+	このメッセージが見れるのはおかしいよ@
+	クリックでタイトルに戻ります…\
+return
+
+
+*def_adv2nvl
+	getparam %0,%13	;正直%0要らなそう
+	if %13==0 setwindow 50,475,28, 4,24,24,0, 5,20,0,1,"arc\console_off.png",0,0;ADVっぽいの
+	if %13==2 setwindow 45, 45,28,15,24,24,0,15,20,0,1,#777777,0,0,799,599		;NVLっぽいの
+return
+
+
+*pause
+	@
+return
+
+
+*cls
+	\
+	vsp 10,0;ここ名前欄csp
+	print 1
+return
+
+
+*def_print
+	if %11==1 print 1
+	if %11!=1 print 10
+	
+	mov %11,0
+return
+
+
+*tati
+	getparam $0,%0
+	
+	if %0==10 taticsp
+	if %0==0  lsph 15 "arc\"+$0+".png",0,0:getspsize 15,%1,%2:tatis:amsp 15,400-(%1/2)    ,20-%3:vsp 15,1	;中心
+	if %0==1  lsph 17 "arc\"+$0+".png",0,0:getspsize 17,%1,%2:tatis:amsp 17,400-(%1/2)+167,20-%3:vsp 17,1	;右
+	if %0==2  lsph 18 "arc\"+$0+".png",0,0:getspsize 18,%1,%2:tatis:amsp 18,400-(%1/2)-167,20-%3:vsp 18,1	;左
+	if %0==5  lsph 16 "arc\"+$0+".png",0,0:getspsize 16,%1,%2:tatis:amsp 16,400-(%1/2)    ,20-%3:vsp 16,1	;中心２？
+return
+
+
+*taticsp
+	csp 15:csp 16:csp 17:csp 18
+return
+
+
+*tatis
+	;立ち絵高さ調整 正直理解不能 ってか本来絶対処理違う
+	mov %3,0
+	if %2<605 mov %3,20
+	if %2>635 mov %3,30
+return
+
+
+*select_set
+	getparam $0
+	
+	if $21=="" mov $21,$0:goto *ssend
+	if $21!="" if $22=="" mov $22,$0:goto *ssend
+	if $21!="" if $22!="" if $23=="" mov $23,$0:goto *ssend
+	if $21!="" if $22!="" if $23!="" if $24=="" mov $24,$0:goto *ssend
+	if $21!="" if $22!="" if $23!="" if $24!="" if $25=="" mov $25,$0:goto *ssend
+	*ssend
+	mov %12,1
+return
+
+
+*select_start
+	if %12!=1 goto *selskip_all
+	
+	vsp 10,0:setwindow 60,60,27,6,24,24,0,50,20,0,0,#999999,50,50,749,549	;ウィンドウselect用
+	
+	if $21=="" if $22=="" if $23=="" if $24=="" if $25=="" goto *selskip
+	select $21,*S1, $22,*S2, $23,*S3, $24,*S4, $25,*S5
+	
+	*S1
+	mov %40,1:goto *selskip
+	*S2
+	mov %40,2:goto *selskip
+	*S3
+	mov %40,3:goto *selskip
+	*S4
+	mov %40,4:goto *selskip
+	*S5
+	mov %40,5
+	*selskip
+	
+	mov $21,"":mov $22,"":mov $23,"":mov $24,"":mov $25,""
+	mov %12,0
+	
+	def_adv2nvl 0,%13	;ウインドウ戻す
+	
+	*selskip_all
+return
+
+
+*def_se
+	getparam %0,$0
+	fileexist %1,"arc\"+$0+".wav"
+	isskip %2
+	if %2==1 goto *seskip
+	if %1==1 dwave %0,"arc\"+$0+".wav"
+	if %1!=1 dwave %0,"arc\"+$0+".ogg"
+	*seskip
+return
+
+
+*def_bgm
+	getparam $0
+	fileexist %1,"arc\"+$0+".wav"
+	if %1==1 bgm "arc\"+$0+".wav"
+	if %1!=1 bgm "arc\"+$0+".ogg"
+return
+
+
+*stopfadeout
+	;ttps://chappy.exblog.jp/5872275/
+	getparam %5
+	bgmfadeout %5
+	stop
+	bgmfadeout 0
+return
+
+
+;----------------------------------------
+;数字変数
+;	%0~%10	defsub汎用
+;	%11		背景チェック
+;	%12		selectチェック
+;	%13		nvl/advモード
+;	
+;	
+;	%40		選択肢結果
+;	
+;	
+;文字変数
+;	
+;	$10	名前欄
+;	
+;	
+;	$21	選択肢1
+;	$22	選択肢2
+;	$23	選択肢3
+;	$24	選択肢4
+;	$25	選択肢5
+;	
+;	
+;スプライト番号
+;	
+;	10	名前欄
+;	
+;	15	立ち絵中心0
+;	16	立ち絵中心
+;	17	立ち絵右
+;	18	立ち絵左
+;	
+;	
+;	
+;	
+;----------------------------------------
+*start
+
+def_adv2nvl 0,0
+abssetcursor 0,":l/8,100,2;arc\wink_▽.png",735,535
+abssetcursor 1,":l/8,100,2;arc\wink_▽.png",735,535	
+
+bgmvol 50		;BGM音量
+voicevol 100	;ボイス音量
+defsevol 30		;効果音音量
+;mov %334,1		;クリア判定
+
+goto *SCR_prologue
+;----------------------------------------
