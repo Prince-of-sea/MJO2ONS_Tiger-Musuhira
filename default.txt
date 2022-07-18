@@ -71,7 +71,6 @@ return
 *cls
 	\
 	vsp 10,0;ここ名前欄csp
-	print 1
 return
 
 
@@ -216,8 +215,8 @@ return
 *start
 
 def_adv2nvl 0,0
-abssetcursor 0,":l/8,100,2;arc\wink_▽.png",735,535
-abssetcursor 1,":l/8,100,2;arc\wink_▽.png",735,535	
+abssetcursor 0,":a/8,100,2;arc\wink_▽.png",735,535
+abssetcursor 1,":a/8,100,2;arc\wink_▽.png",735,535	
 
 bgmvol 50		;BGM音量
 voicevol 100	;ボイス音量
